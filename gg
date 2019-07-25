@@ -1,0 +1,3 @@
+#!/bin/bash
+g++ -o EventLoopThread_unittest EventLoopThread_unittest.cpp EventLoop.cpp Channel.cpp EventLoopThread.cpp Poller.cpp -lpthread
+./EventLoopThread_unittest
