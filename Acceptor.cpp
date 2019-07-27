@@ -82,10 +82,9 @@ void Acceptor::handleRead()
 {
 	loop_->assertInLoopThread();
 
-	struct sockaddr_in addr1;
-	struct sockaddr_in* addr = &addr1;
-	memset(&addr1,0,sizeof addr1);
-	socklen_t addrlen = static_cast<socklen_t>(sizeof *addr);
+	struct sockaddr_in addr;
+	memset(&addr,0,sizeof addr);
+	socklen_t addrlen = static_cast<socklen_t>(sizeof addr);
 	int connfd = accept4(sockfd_,(struct sockaddr*)&addr,
 			&addrlen,SOCK_NONBLOCK | SOCK_CLOEXEC);
 	
@@ -93,7 +92,7 @@ void Acceptor::handleRead()
 	{
 		if(newConnectionCallback_)
 		{
-			newConnectionCallback_(connfd,addr1);
+			newConnectionCallback_(connfd,addr);
 		}
 		else
 		{
