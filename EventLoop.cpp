@@ -8,6 +8,7 @@
 #include <sys/eventfd.h>
 #include <iostream>
 #include <assert.h>
+#include <signal.h>
 
 #include "EventLoop.h"
 #include "Poller.h"
@@ -31,7 +32,17 @@ int createEventFd()
 	}
 	return evtfd;
 }
-}
+
+class IgnoreSigPipe
+{
+	public:
+		IgnoreSigPipe()
+		{
+			::signal(SIGPIPE,SIG_IGN);
+		}
+};
+IgnoreSigPipe ignoreSigPipe;
+}//namespace
 
 EventLoop* EventLoop::getEventLoopOfCurrentThread()
 {
