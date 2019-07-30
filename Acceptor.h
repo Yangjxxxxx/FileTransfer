@@ -28,7 +28,7 @@ class Acceptor:noncopyable
 
 		void setNewConnectionCallback(const NewConnectionCallback& cb){newConnectionCallback_ = cb;}
 
-		bool listiening() const {return listenning_;}
+		bool listenning() const {return listenning_;}
 		void listen();
 
 	private:

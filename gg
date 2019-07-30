@@ -1,0 +1,3 @@
+#!/bin/bash
+g++ -o serverMain serverMain.cpp EventLoop.cpp Channel.cpp Poller.cpp Acceptor.cpp TcpConnection.cpp TcpServer.cpp EventLoopThread.cpp EventLoopThreadPool.cpp QueryServer.cpp FileServer.cpp -lmuduo_net -lmuduo_base -lpthread
+./serverMain filelists

@@ -37,7 +37,7 @@ typedef std::function<void(const TcpConnectionPtr&,size_t)> HighWaterMarkCallbac
 typedef std::function<void(const TcpConnectionPtr&,Buffer*)> MessageCallback;
 
 class TcpConnection : noncopyable,
-	public std::enable_shared_from_this<TcpConnection>
+                      public std::enable_shared_from_this<TcpConnection>
 {
 	public:
 
@@ -55,16 +55,18 @@ class TcpConnection : noncopyable,
 		bool connected() const { return state_ == kConnected; }
 		bool disconnected() const { return state_ == kDisconnected; }
 
+		// void send(string&& message); // C++11
 		void send(const void* message, int len);
 		void send(const StringPiece& message);
-		void send(Buffer* message); 
-		void shutdown(); 
+		// void send(Buffer&& message); // C++11
+		void send(Buffer* message);  // this one will swap data
+		void shutdown(); // NOT thread safe, no simultaneous calling
 		void forceClose();
 		void forceCloseWithDelay(double seconds);
 		void setTcpNoDelay(bool on);
 		void startRead();
 		void stopRead();
-		bool isReading() const { return reading_; };
+		bool isReading() const { return reading_; }; // NOT thread safe, may race with start/stopReadInLoop
 
 		void setContext(const boost::any& context)
 		{ context_ = context; }
@@ -106,9 +108,11 @@ class TcpConnection : noncopyable,
 		void handleRead();
 		void handleWrite();
 		void handleClose();
+		// void sendInLoop(string&& message);
 		void sendInLoop(const StringPiece& message);
 		void sendInLoop(const void* message, size_t len);
 		void shutdownInLoop();
+		// void shutdownAndForceCloseInLoop(double seconds);
 		void forceCloseInLoop();
 		void setState(StateE s) { state_ = s; }
 		const char* stateToString() const;
@@ -117,8 +121,9 @@ class TcpConnection : noncopyable,
 
 		EventLoop* loop_;
 		const string name_;
-		StateE state_;  
+		StateE state_;  // FIXME: use atomic variable
 		bool reading_;
+		// we don't expose those classes to client.
 		int sockfd_;
 		std::unique_ptr<Channel> channel_;
 		const struct sockaddr_in localAddr_;

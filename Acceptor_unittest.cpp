@@ -28,6 +28,7 @@ void setListenAddr(struct sockaddr_in* addr,uint16_t port)
 	addr->sin_addr.s_addr = htonl(INADDR_ANY);
 	addr->sin_port = htons(port);
 }
+
 int main()
 {
 	std::cout<<"main(): pid = "<<getpid()<<"\n";
