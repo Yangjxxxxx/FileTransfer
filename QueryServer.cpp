@@ -57,7 +57,7 @@ void QueryServer::onConnection(const TcpConnectionPtr& conn)
 			conn->setContext(ctx);
 			char buf[kBufSize];
 			size_t nread = ::fread(buf, 1, sizeof buf, fp);
-			conn->send(buf, static_cast<int>(nread));
+			conn->send(buf);
 		}
 		else
 		{
@@ -74,7 +74,7 @@ void QueryServer::onWriteComplete(const TcpConnectionPtr& conn)
 	size_t nread = ::fread(buf, 1, sizeof buf, fp.get());
 	if (nread > 0)
 	{
-		conn->send(buf, static_cast<int>(nread));
+		conn->send(buf);
 	}
 	else
 	{
@@ -82,24 +82,3 @@ void QueryServer::onWriteComplete(const TcpConnectionPtr& conn)
 		std::cout << "QueryServer - done\n";
 	}
 }
-
-/*
-int main(int argc, char* argv[])
-{
-  LOG_INFO << "pid = " << getpid();
-  if (argc > 1)
-  {
-    g_file = argv[1];
-
-    EventLoop loop;
-    InetAddress listenAddr(2021);
-	QueryServer queryServer(&loop,listenAddr);
-    queryServer.start();
-    loop.loop();
-  }
-  else
-  {
-    fprintf(stderr, "Usage: %s file_for_downloading\n", argv[0]);
-  }
-}
-*/

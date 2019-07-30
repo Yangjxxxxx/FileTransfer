@@ -20,7 +20,6 @@ struct tcp_info;
 
 using muduo::net::Buffer;
 using std::string;
-using muduo::StringPiece;
 
 namespace smallMuduo
 {
@@ -55,9 +54,8 @@ class TcpConnection : noncopyable,
 		bool connected() const { return state_ == kConnected; }
 		bool disconnected() const { return state_ == kDisconnected; }
 
-		void send(const void* message, int len);
-		void send(const StringPiece& message);
-		void send(Buffer* message); 
+		void send(const string& message);
+		void send(const char* data);
 		void shutdown(); 
 		void forceClose();
 		void forceCloseWithDelay(double seconds);
@@ -106,7 +104,6 @@ class TcpConnection : noncopyable,
 		void handleRead();
 		void handleWrite();
 		void handleClose();
-		void sendInLoop(const StringPiece& message);
 		void sendInLoop(const void* message, size_t len);
 		void shutdownInLoop();
 		void forceCloseInLoop();

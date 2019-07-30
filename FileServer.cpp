@@ -65,7 +65,7 @@ void FileServer::onMessage(const TcpConnectionPtr& conn,Buffer* buf)
 			conn->setContext(ctx);
 			char buf[kBufSize];
 			size_t nread = ::fread(buf, 1, sizeof buf, fp);
-			conn->send(buf, static_cast<int>(nread));
+			conn->send(buf);
 		}
 		else
 		{
@@ -111,7 +111,7 @@ void FileServer::onWriteComplete(const TcpConnectionPtr& conn)
   size_t nread = ::fread(buf, 1, sizeof buf, fp.get());
   if (nread > 0)
   {
-    conn->send(buf, static_cast<int>(nread));
+    conn->send(buf);
   }
   else
   {

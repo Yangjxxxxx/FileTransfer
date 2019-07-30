@@ -64,47 +64,24 @@ TcpConnection::~TcpConnection()
 	assert(state_ == kDisconnected);
 }
 
-void TcpConnection::send(const void* data, int len)
-{
-	send(StringPiece(static_cast<const char*>(data), len));
-}
-
-void TcpConnection::send(const StringPiece& message)
+void TcpConnection::send(const string& message)
 {
 	if (state_ == kConnected)
 	{
 		if (loop_->isInLoopThread())
 		{
-			sendInLoop(message);
+			sendInLoop(message.data(),message.size());
 		}
 		else
 		{
-			void (TcpConnection::*fp)(const StringPiece& message) = &TcpConnection::sendInLoop;
-			loop_->runInLoop(std::bind(fp,this,message.as_string()));
+			loop_->runInLoop(std::bind(&TcpConnection::sendInLoop,this,message.data(),message.size()));
 		}
 	}
 }
 
-void TcpConnection::send(Buffer* buf)
+void TcpConnection::send(const char* data)
 {
-	if (state_ == kConnected)
-	{
-		if (loop_->isInLoopThread())
-		{
-			sendInLoop(buf->peek(), buf->readableBytes());
-			buf->retrieveAll();
-		}
-		else
-		{
-			void (TcpConnection::*fp)(const StringPiece& message) = &TcpConnection::sendInLoop;
-			loop_->runInLoop(std::bind(fp,this,buf->retrieveAllAsString()));
-		}
-	}
-}
-
-void TcpConnection::sendInLoop(const StringPiece& message)
-{
-  sendInLoop(message.data(), message.size());
+	send(string(data));
 }
 
 void TcpConnection::sendInLoop(const void* data, size_t len)
@@ -330,7 +307,7 @@ void TcpConnection::handleWrite()
 void TcpConnection::handleClose()
 {
 	loop_->assertInLoopThread();
-	std::cout << "fd = " << channel_->fd() << " state = " << stateToString();
+	std::cout << "fd = " << channel_->fd() << " state = " << stateToString() << "\n";
 	assert(state_ == kConnected || state_ == kDisconnecting);
 	setState(kDisconnected);
 	channel_->disableAll();
