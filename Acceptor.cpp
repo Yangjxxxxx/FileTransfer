@@ -101,7 +101,7 @@ void Acceptor::handleRead()
 	}
 	else
 	{
-		std::cout<<"Acceptor::handleRead(): accept4 failed.\n";
+//		std::cout<<"Acceptor::handleRead(): accept4 failed.\n";
 	}
 
 }

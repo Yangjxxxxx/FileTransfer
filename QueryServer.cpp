@@ -78,7 +78,7 @@ void QueryServer::onWriteComplete(const TcpConnectionPtr& conn)
 	}
 	else
 	{
-		conn->forceClose();
+		conn->shutdown();
 		std::cout << "QueryServer - done\n";
 	}
 }

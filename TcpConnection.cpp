@@ -61,6 +61,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
 
 TcpConnection::~TcpConnection()
 {
+	close(sockfd_);
 	assert(state_ == kDisconnected);
 }
 
@@ -307,7 +308,7 @@ void TcpConnection::handleWrite()
 void TcpConnection::handleClose()
 {
 	loop_->assertInLoopThread();
-	std::cout << "fd = " << channel_->fd() << " state = " << stateToString() << "\n";
+	std::cout << "fd = " << channel_->fd() << " etate = " << stateToString() << "\n";
 	assert(state_ == kConnected || state_ == kDisconnecting);
 	setState(kDisconnected);
 	channel_->disableAll();
